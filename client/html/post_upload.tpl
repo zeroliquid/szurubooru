@@ -21,6 +21,14 @@
                 }) %>
             </span>
 
+            <span class='add-relation-all'>
+                <%= ctx.makeCheckbox({
+                    text: 'Add relation for all similar posts',
+                    name: 'add-relation-all',
+                    checked: false,
+                }) %>
+            </span>
+
             <span class='pause-remain-on-error'>
                 <%= ctx.makeCheckbox({
                     text: 'Pause on error',
