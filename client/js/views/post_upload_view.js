@@ -381,6 +381,7 @@ class PostUploadView extends events.EventTarget {
                     skipDuplicates: this._skipDuplicatesCheckboxNode.checked,
                     alwaysUploadSimilar:
                         this._alwaysUploadSimilarCheckboxNode.checked,
+                    addRelationAll: this._allRelationsCheckboxNode.checked,
                     pauseRemainOnError:
                         this._pauseRemainOnErrorCheckboxNode.checked,
                 },
