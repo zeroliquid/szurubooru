@@ -64,7 +64,8 @@ class PostUploadController {
                         this._uploadSinglePost(
                             uploadable,
                             e.detail.skipDuplicates,
-                            e.detail.alwaysUploadSimilar
+                            e.detail.alwaysUploadSimilar,
+                            e.detail.addRelationAll
                         ).catch((error) => {
                             anyFailures = true;
                             if (error.uploadable) {
@@ -116,7 +117,12 @@ class PostUploadController {
             );
     }
 
-    _uploadSinglePost(uploadable, skipDuplicates, alwaysUploadSimilar) {
+    _uploadSinglePost(
+        uploadable,
+        skipDuplicates,
+        alwaysUploadSimilar,
+        addRelationAll
+    ) {
         progress.start();
         let reverseSearchPromise = Promise.resolve();
         if (!uploadable.lookalikesConfirmed) {
@@ -156,6 +162,19 @@ class PostUploadController {
                         error.uploadable = uploadable;
                         error.similarPosts = searchResult.similarPosts;
                         return Promise.reject(error);
+                    }
+
+                    if (
+                        searchResult.similarPosts.length &&
+                        alwaysUploadSimilar &&
+                        addRelationAll
+                    ) {
+                        let relationIds = searchResult.similarPosts.map(
+                            (similar) => similar.post.id
+                        );
+                        uploadable.relations = Array.from(
+                            new Set(uploadable.relations.concat(relationIds))
+                        );
                     }
                 }
 
