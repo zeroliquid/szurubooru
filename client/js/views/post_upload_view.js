@@ -181,6 +181,9 @@ class PostUploadView extends events.EventTarget {
         this._cancelButtonNode.addEventListener("click", (e) =>
             this._evtCancelButtonClick(e)
         );
+        this._allRelationsCheckboxNode.addEventListener("change", () =>
+            this._evtAllRelationsCheckboxChange()
+        );
         this._formNode.addEventListener("submit", (e) =>
             this._evtFormSubmit(e)
         );
@@ -356,6 +359,20 @@ class PostUploadView extends events.EventTarget {
         }
     }
 
+    _evtAllRelationsCheckboxChange() {
+        const checked = this._allRelationsCheckboxNode.checked;
+        this._uploadables.forEach((uploadable) => {
+            if (!uploadable.rowNode) {
+                return;
+            }
+            uploadable.rowNode
+                .querySelectorAll("[name=add-relation]")
+                .forEach((input) => {
+                    input.checked = checked;
+                });
+        });
+    }
+
     _emit(eventType) {
         this.dispatchEvent(
             new CustomEvent(eventType, {
@@ -364,6 +381,7 @@ class PostUploadView extends events.EventTarget {
                     skipDuplicates: this._skipDuplicatesCheckboxNode.checked,
                     alwaysUploadSimilar:
                         this._alwaysUploadSimilarCheckboxNode.checked,
+                    addRelationAll: this._allRelationsCheckboxNode.checked,
                     pauseRemainOnError:
                         this._pauseRemainOnErrorCheckboxNode.checked,
                 },
@@ -401,6 +419,12 @@ class PostUploadView extends events.EventTarget {
             .addEventListener("click", (e) =>
                 this._evtMoveClick(e, uploadable, 1)
             );
+
+        if (this._allRelationsCheckboxNode.checked) {
+            rowNode.querySelectorAll("[name=add-relation]").forEach((input) => {
+                input.checked = true;
+            });
+        }
     }
 
     _updateThumbnailNode(uploadable) {
@@ -432,6 +456,12 @@ class PostUploadView extends events.EventTarget {
     get _alwaysUploadSimilarCheckboxNode() {
         return this._hostNode.querySelector(
             "form [name=always-upload-similar]"
+        );
+    }
+
+    get _allRelationsCheckboxNode() {
+        return this._hostNode.querySelector(
+            "form [name=add-relation-all]"
         );
     }
 
